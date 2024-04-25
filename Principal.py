@@ -38,4 +38,4 @@ Elast = 210e9
 
 Teste1 = Corpo(mn,el,Res,Marea,Elast)
 
-print(Teste1.__dict__)
+Teste1.exibe_dados()

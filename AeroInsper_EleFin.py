@@ -60,6 +60,61 @@ class Corpo:
             i+=1
         self.M_K_Global_Reduzida = matriz_G
 
+        self.vetor_U_reduzido = np.linalg.solve(self.M_K_Global_Reduzida,self.vetor_resultantes_reduzido)
+
+        u_original = np.zeros([2*self.numNos, 1])
+
+        j=0
+        for i in range(len(u_original)):
+            if i not in self.linhasRemovidas:
+                u_original[i] = self.vetor_U_reduzido[j]
+                j+=1
+        self.Vetor_U = u_original
+        self.lista_final_Resultantes = self.M_K_Global @ self.Vetor_U
+
+        self.lista_tensoes=[]
+        for i in range(self.numElem):
+            u_elemento = np.zeros((4,1))
+            coluna = self.Mconect[:,i]
+            j=0
+            for n in coluna:
+                if n== -1:
+                    conj1 = j
+                if n==1: 
+                    conj2 =j
+                j+=1
+            conjs = [conj1,conj2]
+            cont= 0
+            x1= self.Mnos[0][conj1]
+            x2 = self.Mnos[0][conj2]
+            y1= self.Mnos[1][conj1]
+            y2 = self.Mnos[1][conj2]
+            for conj in conjs:
+                u_elemento[(cont*2)] = u_original[conj*2]
+                u_elemento[(cont*2)+1] = u_original[(conj*2)+1]
+                cont+=1
+            cscs = np.zeros((1,4))
+            co= (x2 -x1)/self.lista_L[i]
+            se= (y2 -y1)/self.lista_L[i]
+            cscs[0]=[-co,-se,co,se]
+            tens = (self.Elast/self.lista_L[i])*(cscs @ u_elemento)
+            self.lista_tensoes.append(tens)
+
+    def exibe_dados(self):
+        for titulo,dado in self.__dict__.items():
+            print('\u001b[32m'+titulo + ":"+'\u001b[0m')
+            print('\u001b[36;1m',end="")
+            if type(dado) != list:
+                print(dado)
+                print('\u001b[0m',end="")
+                print('='*100)
+            else:     
+                for ddlista in dado:
+                    print(ddlista)
+                print('\u001b[0m',end="")
+                print('='*100)
+
+        return
         
 
 
