@@ -1,5 +1,6 @@
 from math import*
 import numpy as np
+import datetime as dt
 
 class Corpo:
     def __init__(self,matriz_dos_nos,elementos,listaRes,matriz_areas,Elast):
@@ -101,7 +102,9 @@ class Corpo:
             self.lista_tensoes.append(tens)
 
     def exibe_dados(self):
+       
         for titulo,dado in self.__dict__.items():
+            
             print('\u001b[32m'+titulo + ":"+'\u001b[0m')
             print('\u001b[36;1m',end="")
             if type(dado) != list:
@@ -113,9 +116,22 @@ class Corpo:
                     print(ddlista)
                 print('\u001b[0m',end="")
                 print('='*100)
+            
+    
+        with open("registro.txt",'a') as reg:
+            reg.write(('====='+str(dt.date.today()) + "=====\n"))
+            for titulo,dado in self.__dict__.items():
+                    reg.write((str(titulo).upper() + ": \n"))
+                    if type(dado) != list:
+                        reg.write(('\n'+ str(dado)+'\n'))
+                    else:
+                        for ddlista in dado:
+                            reg.write((str(ddlista)+'\n'))
+                    reg.write("="*100 + '\n')
+
+            reg.close()
 
         return
-        
 
 
 
